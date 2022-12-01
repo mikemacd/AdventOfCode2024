@@ -62,20 +62,3 @@ func readInput() elves {
 
 	return e
 }
-
-func findBiggest(e elves) (int, int) {
-	biggest := -1
-	biggestCal := -1
-
-	for i, v := range e {
-		sum := 0
-		for _, c := range v.items {
-			sum += c
-		}
-		if sum > biggestCal {
-			biggestCal = sum
-			biggest = i
-		}
-	}
-	return biggest, biggestCal
-}
