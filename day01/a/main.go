@@ -3,7 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -30,7 +30,7 @@ func readInput() elves {
 		fmt.Println("Missing parameter, provide file name!")
 		return elves{}
 	}
-	data, err := ioutil.ReadFile(os.Args[1])
+	data, err := io.ReadFile(os.Args[1])
 	if err != nil {
 		fmt.Println("Can't read file:", os.Args[1])
 		panic(err)
