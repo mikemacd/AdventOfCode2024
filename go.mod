@@ -1,3 +1,3 @@
-module github.com/mikemacd/AdventOfCode2022
+module github.com/mikemacd/AdventOfCode2023
 
-go 1.19
+go 1.21

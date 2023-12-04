@@ -3,72 +3,65 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"log"
 	"os"
-	"strconv"
 )
 
-type elves []singleElf
-type singleElf struct {
-	items []int
-}
+type Datarows []Datarow
+
+type Datarow interface{}
 
 func main() {
-	elves := readInput()
-
-	idx, cal := findBiggest(elves)
-
-	fmt.Printf("%d has the most calories %d \n", idx, cal)
-	os.Exit(0)
-}
-
-func readInput() elves {
-	e := elves{}
-
 	if len(os.Args) < 2 {
 		fmt.Println("Missing parameter, provide file name!")
-		return elves{}
+		os.Exit(1)
 	}
-	data, err := io.ReadFile(os.Args[1])
+	data, _ := ReadInput(os.Args[1])
+
+	rv, err := ProcessData(data)
 	if err != nil {
-		fmt.Println("Can't read file:", os.Args[1])
 		panic(err)
 	}
 
+	fmt.Printf("error:%+v\nresult:\n%+v\n", err, rv)
+
+	os.Exit(0)
+}
+
+func ReadInput(filename string) (Datarows, error) {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		fmt.Println("Can't read file:", filename)
+		return nil, err
+	}
+
 	lines := bytes.Split(data, []byte("\n"))
+fmt.Printf("LinesLen:%d\n",len(lines))
+	rv := make(Datarows, len(lines))
+
 	idx := 0
 	for i, line := range lines {
 		if len(line) == 0 {
 			idx++
 			continue
 		}
-		num, err := strconv.Atoi(string(line))
-		if err != nil {
-			log.Fatalf("Can't parse number on line %d: %v\n", i, line)
-		}
-		if len(e)-1 < idx {
-			e = append(e, singleElf{})
-		}
-		e[idx].items = append(e[idx].items, num)
+
+		datarow := transformInputLine(line)
+
+		rv[i] = datarow
+
 	}
 
-	return e
+	return rv, nil
 }
 
-func findBiggest(e elves) (int, int) {
-	biggest := -1
-	biggestCal := -1
+func transformInputLine(line []byte) Datarow {
+	var rv Datarow
 
-	for i, v := range e {
-		sum := 0
-		for _, c := range v.items {
-			sum += c
-		}
-		if sum > biggestCal {
-			biggestCal = sum
-			biggest = i
-		}
-	}
-	return biggest, biggestCal
+	return rv
+}
+
+func ProcessData(data Datarows) (interface{}, error) {
+	var rv interface{}
+
+	return rv, nil
 }
