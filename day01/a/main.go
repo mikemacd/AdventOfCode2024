@@ -57,6 +57,8 @@ fmt.Printf("LinesLen:%d\n",len(lines))
 func transformInputLine(line []byte) Datarow {
 	var rv Datarow
 
+	rv = string(line)
+	
 	return rv
 }
 
