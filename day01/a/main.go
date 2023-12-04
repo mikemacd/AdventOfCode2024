@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"regexp"
+	"strconv"
 )
 
 type Datarows []Datarow
@@ -35,7 +37,7 @@ func ReadInput(filename string) (Datarows, error) {
 	}
 
 	lines := bytes.Split(data, []byte("\n"))
-fmt.Printf("LinesLen:%d\n",len(lines))
+
 	rv := make(Datarows, len(lines))
 
 	idx := 0
@@ -58,12 +60,35 @@ func transformInputLine(line []byte) Datarow {
 	var rv Datarow
 
 	rv = string(line)
-	
+
 	return rv
 }
 
 func ProcessData(data Datarows) (interface{}, error) {
-	var rv interface{}
+
+	var rv=int(0)
+
+	for _, item := range data {
+		rv += ProcessLine(item.(string) )
+	}
 
 	return rv, nil
+}
+
+func ProcessLine(line string) int {
+	r1 := regexp.MustCompile(`^[^\d]*(\d{1}).*?`)
+	r2 := regexp.MustCompile(`.*?(\d{1})[^\d]*$`)
+
+	r1m := r1.FindStringSubmatch(line)
+	r2m := r2.FindStringSubmatch(line)
+	
+	ld := r1m[1]
+	rd := r2m[1]
+
+	ldi,_ := strconv.Atoi(ld)
+	rdi,_ := strconv.Atoi(rd)
+
+	rv := ldi*10+rdi
+	
+	return rv
 }
