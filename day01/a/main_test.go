@@ -7,7 +7,10 @@ import (
 	"testing"
 )
 
-var testData = []byte(``)
+var testData = []byte(`1abc2
+pqr3stu8vwx
+a1b2c3d4e5f
+treb7uchet`)
 var testFile, _ = os.CreateTemp(os.TempDir(), "testdata")
 
 func init() {
@@ -37,8 +40,6 @@ func getTestDatafile() string {
 }
 
 func Test_ReadInput(t *testing.T) {
-	emptyDatarows :=  make(Datarows, 1)
-
 	type args struct {
 		filename string
 	}
@@ -53,7 +54,12 @@ func Test_ReadInput(t *testing.T) {
 			args: args{
 				filename: getTestDatafile(),
 			},
-			want:    emptyDatarows,
+			want:    Datarows{
+				"1abc2",
+				"pqr3stu8vwx",
+				"a1b2c3d4e5f",
+				"treb7uchet",
+			},
 			wantErr: nil,
 		},
 	}
