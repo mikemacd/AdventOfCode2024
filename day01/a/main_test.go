@@ -7,10 +7,12 @@ import (
 	"testing"
 )
 
-var testData = []byte(`1abc2
-pqr3stu8vwx
-a1b2c3d4e5f
-treb7uchet`)
+var testData = []byte(`3   4
+4   3
+2   5
+1   3
+3   9
+3   3`)
 var testFile, _ = os.CreateTemp(os.TempDir(), "testdata")
 
 func init() {
@@ -54,20 +56,26 @@ func Test_ReadInput(t *testing.T) {
 			args: args{
 				filename: getTestDatafile(),
 			},
-			want:    Datarows{
-				"1abc2",
-				"pqr3stu8vwx",
-				"a1b2c3d4e5f",
-				"treb7uchet",
+			want: Datarows{
+				"3   4",
+				"4   3",
+				"2   5",
+				"1   3",
+				"3   9",
+				"3   3",
 			},
 			wantErr: nil,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got, err := ReadInput(tt.args.filename); !reflect.DeepEqual(got, tt.want) || err != tt.wantErr {
+			got, err := ReadInput(tt.args.filename)
+			if !reflect.DeepEqual(got, tt.want) || err != tt.wantErr {
 				t.Errorf("ReadInput(%s) = %v,%v ; want %v, %v", tt.args.filename, got, err, tt.want, tt.wantErr)
 			}
+			rv, err := ProcessData(got)
+			_ = err
+			_ = rv
 		})
 	}
 }
