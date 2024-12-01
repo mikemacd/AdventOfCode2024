@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"os"
-	"regexp"
+	"sort"
 )
-
-var i = 0
 
 type Datarows []Datarow
 
@@ -69,57 +67,30 @@ func ProcessData(data Datarows) (interface{}, error) {
 
 	var rv = int(0)
 
+	left, right := []int{}, map[int]int{}
+
 	for _, item := range data {
-		rv += ProcessLine(item.(string))
+		if item == nil {
+			continue
+		}
+		is := string(item.(string))
+		a, b := ProcessLine(is)
+		left = append(left, a)
+		right[b]++
+
+	}
+
+	sort.Sort(sort.IntSlice(left))
+
+	//	Calculate a total similarity score by adding up each number in the left list after multiplying it by the number of times that number appears in the right list.
+	for i := range left {
+		rv += left[i] * right[left[i]]
 	}
 
 	return rv, nil
 }
 
-func ProcessLine(line string) int {
-	r1 := regexp.MustCompile(`^.*?(one|two|three|four|five|six|seven|eight|nine|\d)`)
-	r2 := regexp.MustCompile(`^.*?(enin|thgie|neves|xis|evif|ruof|eerht|owt|eno|\d)`)
-
-	r1m := r1.FindStringSubmatch(line)
-	r2m := r2.FindStringSubmatch(reverse(line))
-
-	ldi := decode(r1m[1])
-	rdi := decode(r2m[1])
-
-	rv := ldi*10 + rdi
-	fmt.Printf("%d %s %s:%s %d:%d %d\n", i, line, r1m[1], r2m[1], ldi, rdi, rv)
-	i = i + 1
-	return rv
-}
-
-func decode(input string) int {
-	switch input {
-	case "1", "one", "eno":
-		return 1
-	case "2", "two", "owt":
-		return 2
-	case "3", "three", "eerht":
-		return 3
-	case "4", "four", "ruof":
-		return 4
-	case "5", "five", "evif":
-		return 5
-	case "6", "six", "xis":
-		return 6
-	case "7", "seven", "neves":
-		return 7
-	case "8", "eight", "thgie":
-		return 8
-	case "9", "nine", "enin":
-		return 9
-	}
-	return 0
-}
-
-func reverse(input string) string {
-	rv := []rune(input)
-	for i, j := 0, len(rv)-1; i < j; i, j = i+1, j-1 {
-		rv[i], rv[j] = rv[j], rv[i]
-	}
-	return string(rv)
+func ProcessLine(line string) (a, b int) {
+	_, _ = fmt.Sscanf(line, "%d %d", &a, &b)
+	return
 }
